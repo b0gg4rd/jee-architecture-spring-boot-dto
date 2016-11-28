@@ -1,0 +1,16 @@
+.classpath
+.project
+.settings/
+target/
+/target
+*~
+*.class
+*local_config.tmp
+derby.log
+build/
+Servers/
+.metadata/
+*.iml
+*.idea
+*.log
+*.swp

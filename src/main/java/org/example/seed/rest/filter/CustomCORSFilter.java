@@ -1,4 +1,4 @@
-package org.example.seed.web.filter;
+package org.example.seed.rest.filter;
 
 import java.io.IOException;
 

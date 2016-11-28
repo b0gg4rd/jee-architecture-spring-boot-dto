@@ -1,4 +1,4 @@
-package org.example.seed.web.api;
+package org.example.seed.rest.api;
 
 import org.example.seed.dto.IssueDto;
 import org.example.seed.dto.PageDto;
@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.metrics.CounterService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +20,7 @@ import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping(path = "/issues")
-public class IssueController {
+public class IssueRestController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -35,7 +34,8 @@ public class IssueController {
     private CounterService counterService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public Callable<ResponseEntity<PageDto<IssueDto>>> getAllIssues(@RequestParam("$numberPage") final Integer numberPage, @RequestParam("$recordsPerPage") final Integer recordsPerPage) throws ExecutionException, InterruptedException {
+    @ResponseStatus(HttpStatus.OK)
+    public Callable<PageDto<IssueDto>> getAllIssues(@RequestParam("$numberPage") final Integer numberPage, @RequestParam("$recordsPerPage") final Integer recordsPerPage) throws ExecutionException, InterruptedException {
         this.logger.info("> getAllIssues");
 
         this.counterService.increment("services.issues.findAll.invoke");
@@ -45,11 +45,12 @@ public class IssueController {
 
         this.logger.info("< getAllIssues");
 
-        return () -> new ResponseEntity<>(issuesDto, HttpStatus.OK);
+        return () -> issuesDto;
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public Callable<ResponseEntity<IssueDto>> createIssue(@RequestBody @Validated(value = {IssueCreateGroup.class}) IssueDto issueDto) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Callable<IssueDto> createIssue(@RequestBody @Validated(value = {IssueCreateGroup.class}) IssueDto issueDto) {
         this.logger.info("> createIssue");
 
         final IssueDto currentIssueDto = this.issueMapperImpl.map(this.issueService
@@ -57,11 +58,12 @@ public class IssueController {
 
         this.logger.info("< createIssue");
 
-        return () -> new ResponseEntity<>(currentIssueDto, HttpStatus.CREATED);
+        return () -> currentIssueDto;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Callable<ResponseEntity<IssueDto>> getIssue(@PathVariable("id") String id) throws ExecutionException, InterruptedException {
+    @ResponseStatus(HttpStatus.OK)
+    public Callable<IssueDto> getIssue(@PathVariable("id") String id) throws ExecutionException, InterruptedException {
         this.logger.info("> getIssue");
 
         final IssueDto currentIssueDto = this.issueMapperImpl
@@ -69,11 +71,12 @@ public class IssueController {
 
         this.logger.info("< getIssue");
 
-        return () -> new ResponseEntity<>(currentIssueDto, HttpStatus.OK);
+        return () -> currentIssueDto;
     }
 
     @RequestMapping(method = RequestMethod.PUT)
-    public Callable<ResponseEntity<IssueDto>> updateIssue(@RequestBody @Validated(value = {MomentumGroup.class, IssueUpdateGroup.class}) IssueDto issueDto) {
+    @ResponseStatus(HttpStatus.OK)
+    public Callable<IssueDto> updateIssue(@RequestBody @Validated(value = {MomentumGroup.class, IssueUpdateGroup.class}) IssueDto issueDto) {
         this.logger.info("> updateIssue");
 
         final IssueDto currentIssueDto = this.issueMapperImpl
@@ -81,17 +84,16 @@ public class IssueController {
 
         this.logger.info("< updateIssue");
 
-        return () -> new ResponseEntity<>(currentIssueDto, HttpStatus.OK);
+        return () -> currentIssueDto;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<IssueDto> deleteIssue(@PathVariable("id") String issueId) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteIssue(@PathVariable("id") String issueId) {
         this.logger.info("> deleteIssue");
 
         this.issueService.delete(Long.valueOf(issueId));
 
         this.logger.info("< deleteIssue");
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

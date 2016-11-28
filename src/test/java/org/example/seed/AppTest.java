@@ -1,4 +1,4 @@
-package org.example.issuetracker;
+package org.example.seed;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

@@ -2,8 +2,16 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.example.seed</groupId>
-	<artifactId>baas-spring-boot-jpa-canonical-seed</artifactId>
+	<artifactId>jee-architecture-spring-boot-dto</artifactId>
 	<version>0.0.1</version>
+
+    <name>jee-architecture-spring-boot-dto</name>
+    <description/>
+    <url/>
+    <organization>
+        <name/>
+        <url/>
+    </organization>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
